@@ -1,7 +1,7 @@
 # Protein Analysis Using a Least-squares Approach
 This is a Shiny app whose purpose is to measure the secondary structure composition of proteins from CD data. This was a tool originally developed for my Biophysical Chemistry class in late 2020. Since I found that it outperforms existing services with the same purpose, I decided to turn it into a web so that future students can obtain more accurate estimations. The original assignment, where the mathematical basis of this method is laid (which is little more than a non-linear least squares fit, really) can be found in the *www* folder in this repository. This tool was originally named SIMON, but since I made certain improvements I thought it would be better to give it a new name, an interface and leave it online for the world to use. Any questions regarding PAULA can be sent to my academic email address, malmriv at correo.ugr.es.
 
-I wanted to make a Frequently Asked Questions section so that certain aspects of this service could be explained easily, but since no one as asked me a single question (I am writing this before launching the service) I will call it Reasonable Questions.
+I wanted to make a Frequently Asked Questions section so that certain aspects of this service could be explained easily. Sadly, no one has asked me a single question yet (I am writing this before launching the service), so I will call it Reasonable Questions.
 
 ## **Reasonable Questions.**
 ### Why is the wavelength limited to the 170-250 nm range?
