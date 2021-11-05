@@ -29,44 +29,38 @@ linear = function(wavelength,BS,BT,AH,RA) {
 }
 
 # ui object
-ui <- fluidPage(
-  titlePanel(p("Spatial app", style = "color:#3474A7")),
+ui <- fluidPage(title = "PAULA",
+  titlePanel(img(src = "https://github.com/malmriv/paula/blob/main/www/logo.png?raw=true",width="31%"),
+             tags$head(tags$link(rel="shortcut icon", href="https://github.com/malmriv/paula/blob/main/www/favicon.png?raw=true"))),
   sidebarLayout(
     sidebarPanel(
       #Aquí va algo de texto con instrucciones y tal.
       fileInput("upload", "Subir un archivo.",multiple=F,
-                buttonLabel="buscar..."),accept = c(".tsv", ".txt"),
+                buttonLabel="Buscar..."),accept = c(".tsv", ".txt"),
+      actionButton("compute", "Analizar"),
       DT::dataTableOutput("rawdata"),
-      actionButton("compute", "Intentar ajuste")
     ),
     mainPanel(
-      p("¡Hola! Bienvenid@ a PAULA, acrónimo de Protein Analysis Using a Least-squares Approach.
+      column(10,p("¡Hola! Bienvenid@ a PAULA (Protein Analysis Using a Least-squares Approach).
         Aquí puedes obtener una estimación razonablemente buena de la estructura secundaria de tu proteína
         problema a partir de su espectro de dicroísmo circular en el ultravioleta lejano. Para que el análisis
         funcione correctamente es necesario que tu archivo cumpla ciertos requisitos.
-        En primer lugar, debe ser un archivo .txt con dos columnas separadas por una espacio o por un tabulador.
-        Los decimales deben estar indicados con puntos, no comas. La primera columna debe contener longitudes de onda expresadas en nanómetros. La segunda columna debe
-        contener la cantidad de giro de la luz registrada por el espectrómetro DC (las unidades son irrelevantes).
-        También es necesario que la longitud de onda esté acotada en el rango [170-250] nm. Una vez subas un 
-        archivo y hagas click en Intentar análisis, obtendrás una imagen con tu resultado. Si te parece que la estimación
-        no es suficientemente buena puedes reintentar el análisis tantas veces como consideres. Si quieres
-        saber cuál es el fundamento de PAULA o estás experimentando algún problema, puedes escribirme a
-        malmriv [@] correo.ugr.es."),
-      img(src = "http://shiny.rstudio-staging.com/tutorial/written-tutorial/lesson2/images/image-in-app.png"),
-      plotOutput(
-        "raw",
-        width = "100%",
-        height = "400px",
-        click = NULL,
-        dblclick = NULL,
-        hover = NULL,
-        brush = NULL,
-        inline = FALSE
-      ),
+        En primer lugar, debe ser un archivo .txt con dos columnas separadas por un tabulador o por un espacio.
+        Los decimales deben estar indicados con puntos, no comas. La primera columna debe contener longitudes de
+        onda expresadas en nanómetros. La segunda columna debe contener la cantidad de giro de la luz registrada por el espectrómetro DC (las unidades son irrelevantes).
+        También es necesario que ",strong("la longitud de onda esté acotada en el rango [170-250] nm. "),
+        a(href="https://raw.githubusercontent.com/malmriv/paula/main/sample_proteins/cytochrome_c.txt","Esto")," es un ejemplo
+        de un archivo válido (se permite la notación científica). Una vez subas un 
+        archivo y hagas click en Analizar, obtendrás una imagen con tu resultado. Si te parece que la estimación
+        no es suficientemente buena puedes reintentar el análisis tantas veces como consideres. ",
+        a(href="https://github.com/malmriv/paula/blob/main/README.md","En este enlace"),"pueden encontrarse
+        algunos detalles sobre el funcionamiento de esta aplicación. Si el servicio deja de funcionar o hay cualquier
+        duda acerca de su funcionamiento se me puede contactar mediante mi correo académico, ",a(href="mailto:malmriv@correo.ugr.es","malmriv [@] correo.ugr.es"),
+        br(),div("Manuel Almagro Rivas, 2021. Licencia Creative Commons Zero v1.0 Universal.",style="font-size:80%; color: #808080;"))),
       plotOutput(
         "results",
-        width = "100%",
-        height = "400px",
+        width = "90%",
+        height = "500px",
         click = NULL,
         dblclick = NULL,
         hover = NULL,
@@ -93,6 +87,7 @@ server <- function(input, output) {
     df <- df_products_upload()
     DT::datatable(df)
   })
+  
   #Hacemos el ajuste
   observeEvent(input$compute, {
     df <- df_products_upload()
@@ -120,22 +115,6 @@ server <- function(input, output) {
       legend("topright",c("Experimental","Best fit"),lty=c(1,1),lwd=c(2,2),
              col=c("red","blue"))
     })
-    })
-  
-  #Graficamos los resultados fuera
-  output$raw = renderPlot({
-    df <- df_products_upload()
-    #Hay que andarse con cuidado porque al tratar con objetos responsive
-    #vamos a obtener un error cada vez que abramos la página sin un
-    #archivo y acargado; usamos tryCatch para que, en caso de este "error",
-    #el usuario no vea nada.
-    tryCatch(
-      expr = plot(df,main="Espectro suministrado (sin procesar).",
-                  xlab="lambda (nm)",ylab=""),
-      error = function(e) {}
-    )
-    
-    
   })
 }
 
